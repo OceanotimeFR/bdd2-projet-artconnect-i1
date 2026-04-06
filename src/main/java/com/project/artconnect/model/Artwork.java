@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Artwork entity representing a piece created by an artist.
+ * Artwork entity representing a piece created by an artist. = Œuvre d'art
  */
 public class Artwork {
     private String title;
