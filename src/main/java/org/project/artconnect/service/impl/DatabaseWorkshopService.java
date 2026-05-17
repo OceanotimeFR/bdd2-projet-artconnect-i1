@@ -31,4 +31,19 @@ public class DatabaseWorkshopService implements WorkshopService {
     public List<Booking> getBookingsByMember(CommunityMember member) {
         return new ArrayList<>();
     }
+
+    @Override
+    public void createWorkshop(Workshop workshop) {
+        workshopDao.save(workshop);
+    }
+
+    @Override
+    public void updateWorkshop(Workshop workshop) {
+        workshopDao.update(workshop);
+    }
+
+    @Override
+    public void deleteWorkshop(String title) {
+        workshopDao.delete(title);
+    }
 }

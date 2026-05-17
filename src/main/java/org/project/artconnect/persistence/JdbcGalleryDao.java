@@ -45,4 +45,37 @@ public class JdbcGalleryDao implements GalleryDao {
         } catch (SQLException e) { e.printStackTrace(); }
         return list;
     }
+
+    @Override
+    public void save(Gallery gallery) {
+        String sql = "INSERT INTO Gallery (name, street_name, city, rating) VALUES (?, ?, ?, ?)";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, gallery.getName());
+            pstmt.setString(2, gallery.getStreetName());
+            pstmt.setString(3, gallery.getCity());
+            pstmt.setDouble(4, gallery.getRating());
+            pstmt.executeUpdate();
+        } catch (SQLException e) { e.printStackTrace(); }
+    }
+
+    @Override
+    public void update(Gallery gallery) {
+        String sql = "UPDATE Gallery SET street_name = ?, city = ?, rating = ? WHERE name = ?";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, gallery.getStreetName());
+            pstmt.setString(2, gallery.getCity());
+            pstmt.setDouble(3, gallery.getRating());
+            pstmt.setString(4, gallery.getName());
+            pstmt.executeUpdate();
+        } catch (SQLException e) { e.printStackTrace(); }
+    }
+
+    @Override
+    public void delete(String name) {
+        String sql = "DELETE FROM Gallery WHERE name = ?";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, name);
+            pstmt.executeUpdate();
+        } catch (SQLException e) { e.printStackTrace(); }
+    }
 }

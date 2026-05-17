@@ -47,4 +47,33 @@ public class JdbcCommunityMemberDao implements CommunityMemberDao {
         } catch (SQLException e) { e.printStackTrace(); }
         return list;
     }
+
+    @Override
+    public void save(CommunityMember member) {
+        String sql = "INSERT INTO CommunityMember (name, email) VALUES (?, ?)";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, member.getName());
+            pstmt.setString(2, member.getEmail());
+            pstmt.executeUpdate();
+        } catch (SQLException e) { e.printStackTrace(); }
+    }
+
+    @Override
+    public void update(CommunityMember member) {
+        String sql = "UPDATE CommunityMember SET name = ? WHERE email = ?";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, member.getName());
+            pstmt.setString(2, member.getEmail());
+            pstmt.executeUpdate();
+        } catch (SQLException e) { e.printStackTrace(); }
+    }
+
+    @Override
+    public void delete(String email) {
+        String sql = "DELETE FROM CommunityMember WHERE email = ?";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, email);
+            pstmt.executeUpdate();
+        } catch (SQLException e) { e.printStackTrace(); }
+    }
 }

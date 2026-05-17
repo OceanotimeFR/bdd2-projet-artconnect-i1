@@ -27,4 +27,19 @@ public class DatabaseCommunityService implements CommunityService {
         // Return empty for now as requested
         return new ArrayList<>();
     }
+
+    @Override
+    public void createMember(CommunityMember member) {
+        memberDao.save(member);
+    }
+
+    @Override
+    public void updateMember(CommunityMember member) {
+        memberDao.update(member);
+    }
+
+    @Override
+    public void deleteMember(String email) {
+        memberDao.delete(email);
+    }
 }

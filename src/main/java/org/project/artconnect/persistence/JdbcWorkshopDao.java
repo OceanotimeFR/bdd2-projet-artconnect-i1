@@ -64,4 +64,35 @@ public class JdbcWorkshopDao implements WorkshopDao {
         } catch (SQLException e) { e.printStackTrace(); }
         return list;
     }
+
+    @Override
+    public void save(Workshop workshop) {
+        String sql = "INSERT INTO Workshop (title, level, price) VALUES (?, ?, ?)";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, workshop.getTitle());
+            pstmt.setString(2, workshop.getLevel());
+            pstmt.setDouble(3, workshop.getPrice());
+            pstmt.executeUpdate();
+        } catch (SQLException e) { e.printStackTrace(); }
+    }
+
+    @Override
+    public void update(Workshop workshop) {
+        String sql = "UPDATE Workshop SET level = ?, price = ? WHERE title = ?";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, workshop.getLevel());
+            pstmt.setDouble(2, workshop.getPrice());
+            pstmt.setString(3, workshop.getTitle());
+            pstmt.executeUpdate();
+        } catch (SQLException e) { e.printStackTrace(); }
+    }
+
+    @Override
+    public void delete(String title) {
+        String sql = "DELETE FROM Workshop WHERE title = ?";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, title);
+            pstmt.executeUpdate();
+        } catch (SQLException e) { e.printStackTrace(); }
+    }
 }

@@ -1,57 +1,50 @@
-# ArtConnect Pro - Local Art Community Platform
+# ArtConnect Pro - Plateforme de Communauté Artistique Locale
 
-## Overview
-ArtConnect Pro is a JavaFX-based management system for local art communities. It allows managing artists, artworks, exhibitions, galleries, workshops, and community members.
+## Aperçu
+ArtConnect Pro est un système de gestion basé sur JavaFX pour les communautés artistiques locales. Il permet de gérer les artistes, les œuvres d'art, les expositions, les galeries, les ateliers et les membres de la communauté.
 
-This project is a skeleton designed for students to practice:
-1. **Layered Architecture**: Presentation, Service, DAO, and Model layers.
-2. **Database Persistence**: Implementing JDBC DAOs to connect to a MySQL database.
-3. **JavaFX UI**: Working with FXML, TableViews, and Controllers.
+Ce projet représente une application **entièrement implémentée** mettant en valeur :
+1. **Architecture en couches** : Couches Présentation, Service, DAO et Modèle.
+2. **Persistance des données** : DAO JDBC entièrement fonctionnels connectés à une base de données MySQL.
+3. **Interface Utilisateur JavaFX** : Tableaux dynamiques, formulaires et opérations CRUD persistantes directement depuis l'interface utilisateur.
 
-## Project Structure
-- `com.project.artconnect.MainApp`: Entry point.
-- `com.project.artconnect.model`: Domain entities (POJOs/Stubs).
-- `com.project.artconnect.dao`: Data Access Object interfaces.
-- `com.project.artconnect.persistence`: JDBC implementations (TODO: Students implement these).
-- `com.project.artconnect.service`: Business logic layer.
-- `com.project.artconnect.ui`: JavaFX Controllers and FXML views.
-- `com.project.artconnect.util`: Utility classes like `ConnectionManager` and `ServiceProvider`.
+## Structure du Projet
+- `org.project.artconnect.MainApp` : Point d'entrée.
+- `org.project.artconnect.model` : Entités du domaine (POO stricte, utilisant des références d'objets plutôt que des ID explicites).
+- `org.project.artconnect.dao` : Interfaces DAO (Data Access Object) définissant les opérations CRUD.
+- `org.project.artconnect.persistence` : Implémentations JDBC complètes traduisant les tables SQL en graphes d'objets Java.
+- `org.project.artconnect.service` : Couche logique métier exécutant les services liés à la base de données.
+- `org.project.artconnect.ui` : Contrôleurs JavaFX et vues FXML enrichis des fonctionnalités d'Ajout/Édition/Suppression persistantes.
+- `org.project.artconnect.util` : Classes utilitaires comme `ConnectionManager` et `ServiceProvider` (configurées pour utiliser la base de données).
 
-## How to Run
-Requirement: Java 17+ and Maven installed.
+## Comment l'exécuter
+Pré-requis : Java 17+, Maven et une base de données MySQL active.
 
+1. **Configuration de la Base de données** : Exécutez les scripts SQL situés dans `src/Database/` pour initialiser et peupler votre base de données MySQL.
+2. **Configuration Globale** : Assurez-vous que `DatabaseConfig.java` (dans `org.project.artconnect.config`) contient les bons identifiants et mot de passe.
+3. **Lancement** :
 ```bash
 mvn clean javafx:run
 ```
+L'application s'exécute en se connectant directement à votre base de données MySQL. Toute opération CRUD effectuée dans l'interface est immédiatement sauvegardée.
 
-The application runs "out-of-the-box" using **In-Memory Services** (`InMemoryArtistService`, etc.) located in `com.project.artconnect.service.impl`. This allows immediate demonstration of the UI with dummy data.
+## Conception Orientée Objet (POO)
+L'architecture respecte les bonnes pratiques strictes de la Programmation Orientée Objet, gérant les différences Objet-Relationnel (Object-Relational Mismatch) de manière élégante :
+- **Pas d'ID Explicites** : Les classes du modèle (`Artist`, `Artwork`, etc.) n'ont **pas** de champs `id`. Les ID de la base de données (Clés Primaires) sont gérés de manière transparente au niveau de la couche DAO.
+- **Références d'Objets Directes** : Les relations sont modélisées à l'aide de références directes. Par exemple, un objet `Artwork` contient une référence directe vers un `Artist`.
+- **Mapping Relationnel** : Les jointures de base de données et les clés étrangères sont traduites de manière fluide en collections Java imbriquées et en associations d'entités au sein des DAO.
 
-## OOP-First Design (Object-Oriented Programming)
-Unlike typical database-centric skeletons, ArtConnect Pro follows strict OOP best practices:
-- **No Explicit IDs**: Model classes (`Artist`, `Artwork`, etc.) do **not** have `id` fields. In Java, an object's identity is its memory address/reference, not a numeric ID.
-- **Direct Object References**: Relationships are modeled using direct references. For example, an `Artwork` object holds a reference to an `Artist` object, not an `artistId`.
-- **Bidirectional Links**: Many relationships are bidirectional (e.g., an `Artist` has a `List<Artwork>`, and each `Artwork` points back to its `Artist`).
-- **No Junction Tables**: Many-to-Many relationships (like Exhibitions and Artworks) are modeled using simple collections (`List<Artwork>`) rather than separate junction classes.
+## Fonctionnalités Réalisées
+1. **Intégration JDBC Complète** : Création de DAO complets (`JdbcArtistDao`, `JdbcArtworkDao`, `JdbcGalleryDao`, `JdbcCommunityMemberDao`, `JdbcWorkshopDao`, `JdbcExhibitionDao`) avec des requêtes SQL sécurisées via `PreparedStatement`.
+2. **Opérations CRUD dans l'interface** : Ajout de pop-ups UI (`Dialog`) non intrusifs dans tous les onglets d'entités pour permettre des actions d'Ajout, de Modification et de Suppression en temps réel, directement enregistrées dans la base de données.
+3. **Câblage des Services** : Remplacement des données fictives en mémoire par les véritables services liés à MySQL au sein du `ServiceProvider`.
+4. **Synchronisation des Données** : Alignement des types du modèle objet Java avec les schémas SQL (adaptation de l'énumération pour les types d'abonnements des membres, conversion des adresses de galeries en champs primitifs divisés, support cohérent et robuste des formats de Date).
 
-## Student Tasks (The Challenge)
-1. **ID Discovery**: Students must "discover" or create IDs at the database level. Your JDBC DAOs will need to map database IDs (Primary Keys) to Java object references during the `findAll` or `save` operations.
-2. **Relational Mapping**: You must implement the logic to reconstruct the object graph from relational tables. When fetching an `Artwork`, you must also fetch/link the corresponding `Artist`.
-3. **Database Setup**: Create the MySQL database and tables as per the technical requirements (including IDs and Foreign Keys that are NOT visible in the Java models).
-4. **JDBC Implementation**: Implement the `Jdbc` DAO classes in `com.project.artconnect.persistence`.
-5. **Service Swap**: Update `ServiceProvider` to use your new `Jdbc` DAOs.
-
-## Architecture Diagram
+## Diagramme d'Architecture
 ```mermaid
 graph TD
-    UI[JavaFX Presentation Layer] --> Service[Service Layer]
-    Service --> DAO[DAO Interfaces]
-    DAO --> JDBC[JDBC Persistence Implementation]
-    DAO --> InMemory[InMemory Mock Implementation]
-    JDBC --> DB[(MySQL Database)]
+    UI[Couche Présentation JavaFX] --> Service[Couche Service]
+    Service --> DAO[Interfaces DAO]
+    DAO --> JDBC[Implémentation de persistance JDBC]
+    JDBC --> DB[(Base de données MySQL)]
 ```
-
-## Testing Instructions
-1. Launch the app and verify all 7 tabs show dummy data.
-2. Search for an artist by name or filter by discipline in the Artists Tab.
-3. View the "Discover" tab to see featured content dynamically generated.
-4. Once you implement JDBC, swap the `ServiceProvider` to use your `JdbcArtistDao` and verify data is fetched from MySQL.

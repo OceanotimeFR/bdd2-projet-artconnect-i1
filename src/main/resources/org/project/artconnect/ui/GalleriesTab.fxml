@@ -13,10 +13,15 @@
             <TableColumn fx:id="nameColumn" text="Name" prefWidth="150" />
             <TableColumn fx:id="streetNumColumn" text="No" prefWidth="50" />
             <TableColumn fx:id="streetNameColumn" text="Street" prefWidth="150" />
-            <TableColumn fx:id="zipColumn" text="Zip Code" prefWidth="80" />
+            <TableColumn fx:id="zipColumn" text="Zip" prefWidth="80" />
             <TableColumn fx:id="cityColumn" text="City" prefWidth="100" />
             <TableColumn fx:id="countryColumn" text="Country" prefWidth="100" />
-            <TableColumn fx:id="ratingColumn" text="Rating" prefWidth="60" />
+            <TableColumn fx:id="ratingColumn" text="Rating" prefWidth="80" />
         </columns>
     </TableView>
+    <HBox spacing="10.0" alignment="CENTER_RIGHT">
+        <Button text="Add" onAction="#handleAdd" />
+        <Button text="Edit" onAction="#handleEdit" />
+        <Button text="Delete" onAction="#handleDelete" />
+    </HBox>
 </VBox>

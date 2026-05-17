@@ -9,4 +9,8 @@ public interface CommunityMemberDao {
     Optional<CommunityMember> findById(Long id);
 
     List<CommunityMember> findAll();
+
+    void save(CommunityMember member);
+    void update(CommunityMember member);
+    void delete(String email);
 }
