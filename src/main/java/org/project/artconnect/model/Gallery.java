@@ -5,7 +5,11 @@ import java.util.List;
 
 public class Gallery {
     private String name;
-    private String address;
+    private Integer streetNumber;
+    private String streetName;
+    private String city;
+    private Integer zipCode;
+    private String country;
     private String ownerName;
     private String openingHours;
     private String contactPhone;
@@ -16,9 +20,10 @@ public class Gallery {
     public Gallery() {
     }
 
-    public Gallery(String name, String address, double rating) {
+    public Gallery(String name, String streetName, String city, double rating) {
         this.name = name;
-        this.address = address;
+        this.streetName = streetName;
+        this.city = city;
         this.rating = rating;
     }
 
@@ -30,12 +35,52 @@ public class Gallery {
         this.name = name;
     }
 
-    public String getAddress() {
-        return address;
+    public Integer getStreetNumber() {
+        return streetNumber;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setStreetNumber(Integer streetNumber) {
+        this.streetNumber = streetNumber;
+    }
+
+    public String getStreetName() {
+        return streetName;
+    }
+
+    public void setStreetName(String streetName) {
+        this.streetName = streetName;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public Integer getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(Integer zipCode) {
+        this.zipCode = zipCode;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getAddress() {
+        return (streetNumber != null ? streetNumber + " " : "") +
+                (streetName != null ? streetName + ", " : "") +
+                (zipCode != null ? zipCode + " " : "") +
+                (city != null ? city + " " : "") +
+                (country != null ? country : "");
     }
 
     public String getOwnerName() {

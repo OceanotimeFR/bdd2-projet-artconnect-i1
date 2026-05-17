@@ -1,9 +1,11 @@
 package org.project.artconnect.dao.impl;
 
 import org.project.artconnect.model.Artwork;
-
 import java.util.List;
 
+/**
+ * Data Access Object for Artwork entity.
+ */
 public interface ArtworkDao {
     List<Artwork> findAll();
 

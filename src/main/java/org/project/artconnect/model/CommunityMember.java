@@ -10,10 +10,14 @@ public class CommunityMember {
     private String phone;
     private String city;
     private List<Discipline> favoriteDisciplines = new ArrayList<>();
-    private String membershipType; // free, premium
+    private MembershipType membershipType; // free, premium
     private List<Booking> bookings = new ArrayList<>();
     private List<Review> reviews = new ArrayList<>();
 
+    public enum MembershipType {
+        FREE, PREMIUM;
+    }
+    
     public CommunityMember() {
     }
 
@@ -70,11 +74,11 @@ public class CommunityMember {
         this.favoriteDisciplines = favoriteDisciplines;
     }
 
-    public String getMembershipType() {
+    public MembershipType getMembershipType() {
         return membershipType;
     }
 
-    public void setMembershipType(String membershipType) {
+    public void setMembershipType(MembershipType membershipType) {
         this.membershipType = membershipType;
     }
 

@@ -14,7 +14,7 @@ CREATE TABLE CommunityMember(
    email VARCHAR(50) NOT NULL,
    birthYear INT,
    phone VARCHAR(50),
-   membershipType ENUM('free', 'premium') DEFAULT 'free',
+   membershipType ENUM('FREE', 'PREMIUM') DEFAULT 'FREE',
    PRIMARY KEY(id_member)
 );
 

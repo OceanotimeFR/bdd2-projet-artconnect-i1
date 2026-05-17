@@ -27,7 +27,7 @@ public class InMemoryCommunityService implements CommunityService {
     private CommunityMember addMember(String name, String email, String city) {
         CommunityMember m = new CommunityMember(name, email);
         m.setCity(city);
-        m.setMembershipType("Premium");
+        m.setMembershipType(CommunityMember.MembershipType.PREMIUM);
         members.put(name, m);
         return m;
     }

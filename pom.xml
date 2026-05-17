@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.project</groupId>
+    <groupId>org.project</groupId>
     <artifactId>artconnect-pro</artifactId>
     <version>1.0-SNAPSHOT</version>
 
@@ -52,7 +52,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.project.artconnect.MainApp</mainClass>
+                            <mainClass>org.project.artconnect.MainApp</mainClass>
                         </configuration>
                     </execution>
                 </executions>

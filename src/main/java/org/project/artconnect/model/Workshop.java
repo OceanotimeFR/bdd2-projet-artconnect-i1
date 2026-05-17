@@ -11,7 +11,7 @@ public class Workshop {
     private Artist instructor;
     private String location;
     private String description;
-    private String level; // beginner, intermediate, advanced
+    private String level; // Débutant, Intermédiaire, Avancé
 
     public Workshop() {
     }

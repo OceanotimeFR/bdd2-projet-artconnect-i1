@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="10.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.project.artconnect.ui.GalleryController">
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+    <TableView fx:id="galleryTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="nameColumn" text="Name" prefWidth="150" />
+            <TableColumn fx:id="streetNumColumn" text="No" prefWidth="50" />
+            <TableColumn fx:id="streetNameColumn" text="Street" prefWidth="150" />
+            <TableColumn fx:id="zipColumn" text="Zip Code" prefWidth="80" />
+            <TableColumn fx:id="cityColumn" text="City" prefWidth="100" />
+            <TableColumn fx:id="countryColumn" text="Country" prefWidth="100" />
+            <TableColumn fx:id="ratingColumn" text="Rating" prefWidth="60" />
+        </columns>
+    </TableView>
+</VBox>

@@ -12,4 +12,6 @@ public interface GalleryService {
     Optional<Gallery> getGalleryByName(String name);
 
     List<Exhibition> getExhibitionsByGallery(Gallery gallery);
+
+    List<Exhibition> getAllExhibitions();
 }

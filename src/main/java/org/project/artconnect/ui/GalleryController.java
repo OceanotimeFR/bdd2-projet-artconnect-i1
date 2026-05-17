@@ -2,32 +2,43 @@ package org.project.artconnect.ui;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import org.project.artconnect.model.Gallery;
 import org.project.artconnect.service.GalleryService;
 import org.project.artconnect.util.ServiceProvider;
 
 public class GalleryController {
     @FXML
-    private ListView<Gallery> galleryList;
+    private TableView<Gallery> galleryTable;
+    @FXML
+    private TableColumn<Gallery, String> nameColumn;
+    @FXML
+    private TableColumn<Gallery, Integer> streetNumColumn;
+    @FXML
+    private TableColumn<Gallery, String> streetNameColumn;
+    @FXML
+    private TableColumn<Gallery, Integer> zipColumn;
+    @FXML
+    private TableColumn<Gallery, String> cityColumn;
+    @FXML
+    private TableColumn<Gallery, String> countryColumn;
+    @FXML
+    private TableColumn<Gallery, Double> ratingColumn;
 
     private final GalleryService galleryService = ServiceProvider.getGalleryService();
 
     @FXML
     public void initialize() {
-        galleryList.setItems(FXCollections.observableArrayList(galleryService.getAllGalleries()));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        streetNumColumn.setCellValueFactory(new PropertyValueFactory<>("streetNumber"));
+        streetNameColumn.setCellValueFactory(new PropertyValueFactory<>("streetName"));
+        zipColumn.setCellValueFactory(new PropertyValueFactory<>("zipCode"));
+        cityColumn.setCellValueFactory(new PropertyValueFactory<>("city"));
+        countryColumn.setCellValueFactory(new PropertyValueFactory<>("country"));
+        ratingColumn.setCellValueFactory(new PropertyValueFactory<>("rating"));
 
-        // Custom cell factory to show more info
-        galleryList.setCellFactory(lv -> new javafx.scene.control.ListCell<>() {
-            @Override
-            protected void updateItem(Gallery item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    setText(item.getName() + " - " + item.getAddress() + " (" + item.getRating() + "/5.0)");
-                }
-            }
-        });
+        galleryTable.setItems(FXCollections.observableArrayList(galleryService.getAllGalleries()));
     }
 }

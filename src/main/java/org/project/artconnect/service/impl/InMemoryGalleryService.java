@@ -37,7 +37,7 @@ public class InMemoryGalleryService implements GalleryService {
     }
 
     private Gallery addGallery(String name, String address, double rating) {
-        Gallery g = new Gallery(name, address, rating);
+        Gallery g = new Gallery(name, address, "City", rating);
         galleries.put(name, g);
         return g;
     }
@@ -69,5 +69,14 @@ public class InMemoryGalleryService implements GalleryService {
         if (gallery == null)
             return Collections.emptyList();
         return gallery.getExhibitions();
+    }
+
+    @Override
+    public List<Exhibition> getAllExhibitions() {
+        List<Exhibition> all = new ArrayList<>();
+        for (Gallery g : galleries.values()) {
+            all.addAll(g.getExhibitions());
+        }
+        return all;
     }
 }
