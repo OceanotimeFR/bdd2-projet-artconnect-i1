@@ -79,4 +79,19 @@ public class InMemoryGalleryService implements GalleryService {
         }
         return all;
     }
+
+    @Override
+    public void createGallery(Gallery gallery) {
+
+    }
+
+    @Override
+    public void updateGallery(Gallery gallery) {
+
+    }
+
+    @Override
+    public void deleteGallery(String name) {
+
+    }
 }

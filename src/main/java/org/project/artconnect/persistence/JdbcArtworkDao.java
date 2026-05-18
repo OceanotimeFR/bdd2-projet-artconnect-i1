@@ -65,57 +65,39 @@ public class JdbcArtworkDao implements ArtworkDao {
 
     @Override
     public void save(Artwork artwork) {
-        String insertArtworkSql = "INSERT INTO Artwork (title, creationYear, type, medium, dimensions, description, price, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         String selectArtistSql = "SELECT id_artist FROM Artist WHERE name = ?";
-        String insertLinkSql = "INSERT INTO Appartient (id_artist, id_artwork) VALUES (?, ?)";
+        String callProcedure = "{CALL add_artwork(?, ?, ?, ?, ?, ?)}";
 
         try (Connection conn = getConnection()) {
-            conn.setAutoCommit(false); // Transaction
-
-            try (PreparedStatement pstmt = conn.prepareStatement(insertArtworkSql, Statement.RETURN_GENERATED_KEYS)) {
-                pstmt.setString(1, artwork.getTitle());
-                pstmt.setObject(2, artwork.getCreationYear(), Types.INTEGER);
-                pstmt.setString(3, artwork.getType());
-                pstmt.setString(4, artwork.getMedium());
-                pstmt.setString(5, artwork.getDimensions());
-                pstmt.setString(6, artwork.getDescription());
-                pstmt.setDouble(7, artwork.getPrice());
-                pstmt.setString(8, artwork.getStatus() != null ? artwork.getStatus().name() : Artwork.Status.FOR_SALE.name());
-                
-                pstmt.executeUpdate();
-
-                int artworkId = -1;
-                try (ResultSet rs = pstmt.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        artworkId = rs.getInt(1);
-                    }
-                }
-
-                // Lier l'artiste s'il est dfini
-                if (artworkId != -1 && artwork.getArtist() != null && artwork.getArtist().getName() != null) {
-                    int artistId = -1;
-                    try (PreparedStatement pstmtArtist = conn.prepareStatement(selectArtistSql)) {
-                        pstmtArtist.setString(1, artwork.getArtist().getName());
-                        try (ResultSet rsArtist = pstmtArtist.executeQuery()) {
-                            if (rsArtist.next()) {
-                                artistId = rsArtist.getInt(1);
-                            }
-                        }
-                    }
-                    if (artistId != -1) {
-                        try (PreparedStatement pstmtLink = conn.prepareStatement(insertLinkSql)) {
-                            pstmtLink.setInt(1, artistId);
-                            pstmtLink.setInt(2, artworkId);
-                            pstmtLink.executeUpdate();
+            // Résoudre l'ID de l'artiste à partir de son nom
+            int artistId = -1;
+            if (artwork.getArtist() != null && artwork.getArtist().getName() != null) {
+                try (PreparedStatement pstmt = conn.prepareStatement(selectArtistSql)) {
+                    pstmt.setString(1, artwork.getArtist().getName());
+                    try (ResultSet rs = pstmt.executeQuery()) {
+                        if (rs.next()) {
+                            artistId = rs.getInt(1);
                         }
                     }
                 }
-                conn.commit();
-            } catch (SQLException e) {
-                conn.rollback();
-                e.printStackTrace();
-            } finally {
-                conn.setAutoCommit(true);
+            }
+
+            try (CallableStatement cstmt = conn.prepareCall(callProcedure)) {
+                cstmt.setString(1, artwork.getTitle());
+                cstmt.setObject(2, artwork.getCreationYear(), Types.INTEGER);
+                cstmt.setString(3, artwork.getType());
+                cstmt.setDouble(4, artwork.getPrice());
+                if (artistId != -1) {
+                    cstmt.setInt(5, artistId);
+                } else {
+                    cstmt.setNull(5, Types.INTEGER);
+                }
+                if (artwork.getExhibitionId() != null) {
+                    cstmt.setInt(6, artwork.getExhibitionId());
+                } else {
+                    cstmt.setNull(6, Types.INTEGER);
+                }
+                cstmt.execute();
             }
         } catch (SQLException e) {
             e.printStackTrace();

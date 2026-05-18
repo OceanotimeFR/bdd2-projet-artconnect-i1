@@ -16,6 +16,7 @@ public class Artwork {
     private double price;
     private Status status; // FOR_SALE, SOLD, EXHIBITED
     private Artist artist;
+    private Integer exhibitionId;
     private List<ArtworkTag> tags = new ArrayList<>();
 
     public enum Status {
@@ -105,6 +106,14 @@ public class Artwork {
 
     public void setArtist(Artist artist) {
         this.artist = artist;
+    }
+
+    public Integer getExhibitionId() {
+        return exhibitionId;
+    }
+
+    public void setExhibitionId(Integer exhibitionId) {
+        this.exhibitionId = exhibitionId;
     }
 
     public List<ArtworkTag> getTags() {

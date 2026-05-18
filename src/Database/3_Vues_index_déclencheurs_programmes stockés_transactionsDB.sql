@@ -179,17 +179,3 @@ BEGIN
 END //
 
 DELIMITER ;
-
--- =====================================
--- TRANSACTION TEST
--- =====================================
-
-START TRANSACTION;
-
-INSERT INTO Booking (bookingDate, paymentStatus, id_workshop, id_member)
-VALUES (NOW(), 'PAID', 2, 1);
-
-INSERT INTO Booking (bookingDate, paymentStatus, id_workshop, id_member)
-VALUES (NOW(), 'PAID', 3, 1);
-
-COMMIT;

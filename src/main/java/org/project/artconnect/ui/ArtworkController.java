@@ -17,6 +17,7 @@ import javafx.geometry.Insets;
 import java.text.NumberFormat;
 import java.util.Locale;
 import org.project.artconnect.model.Artwork;
+import org.project.artconnect.model.Artist;
 import org.project.artconnect.service.ArtworkService;
 import org.project.artconnect.util.ServiceProvider;
 
@@ -115,26 +116,51 @@ public class ArtworkController {
         grid.setPadding(new Insets(20, 150, 10, 10));
 
         TextField titleField = new TextField(artwork.getTitle());
+        TextField yearField = new TextField(artwork.getCreationYear() != null ? String.valueOf(artwork.getCreationYear()) : "");
         TextField typeField = new TextField(artwork.getType() != null ? artwork.getType() : "");
         TextField priceField = new TextField(String.valueOf(artwork.getPrice()));
+        TextField artistField = new TextField(artwork.getArtist() != null ? artwork.getArtist().getName() : "");
+        TextField exhibitionField = new TextField(artwork.getExhibitionId() != null ? String.valueOf(artwork.getExhibitionId()) : "");
 
         grid.add(new Label("Title:"), 0, 0);
         grid.add(titleField, 1, 0);
-        grid.add(new Label("Type:"), 0, 1);
-        grid.add(typeField, 1, 1);
-        grid.add(new Label("Price:"), 0, 2);
-        grid.add(priceField, 1, 2);
+        grid.add(new Label("Year:"), 0, 1);
+        grid.add(yearField, 1, 1);
+        grid.add(new Label("Type:"), 0, 2);
+        grid.add(typeField, 1, 2);
+        grid.add(new Label("Price:"), 0, 3);
+        grid.add(priceField, 1, 3);
+        grid.add(new Label("Artist name:"), 0, 4);
+        grid.add(artistField, 1, 4);
+        grid.add(new Label("Exhibition ID:"), 0, 5);
+        grid.add(exhibitionField, 1, 5);
 
         dialog.getDialogPane().setContent(grid);
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
                 artwork.setTitle(titleField.getText());
+                try {
+                    artwork.setCreationYear(Integer.parseInt(yearField.getText()));
+                } catch (NumberFormatException e) {
+                    artwork.setCreationYear(null);
+                }
                 artwork.setType(typeField.getText());
                 try {
                     artwork.setPrice(Double.parseDouble(priceField.getText()));
                 } catch (NumberFormatException e) {
                     artwork.setPrice(0.0);
+                }
+                String artistName = artistField.getText().trim();
+                if (!artistName.isEmpty()) {
+                    Artist artist = new Artist();
+                    artist.setName(artistName);
+                    artwork.setArtist(artist);
+                }
+                try {
+                    artwork.setExhibitionId(Integer.parseInt(exhibitionField.getText()));
+                } catch (NumberFormatException e) {
+                    artwork.setExhibitionId(null);
                 }
                 return true;
             }
