@@ -3,6 +3,7 @@ package org.project.artconnect.ui;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -15,12 +16,15 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.geometry.Insets;
 import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Locale;
 import org.project.artconnect.model.Workshop;
 import org.project.artconnect.service.WorkshopService;
 import org.project.artconnect.util.ServiceProvider;
-
-import java.time.LocalDateTime;
 
 public class WorkshopController {
     @FXML
@@ -36,12 +40,23 @@ public class WorkshopController {
     @FXML
     private TableColumn<Workshop, String> levelColumn;
 
+    // Pattern pour changer le format d'affichage de la date
+    private static final DateTimeFormatter DATE_TIME_FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy '-' HH:mm");
+
     private final WorkshopService workshopService = ServiceProvider.getWorkshopService();
 
     @FXML
     public void initialize() {
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+        dateColumn.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(LocalDateTime value, boolean empty) {
+                super.updateItem(value, empty);
+                // Opérateur ternaire --> condition ? valeurSiVrai : valeurSiFaux
+                setText(empty || value == null ? null : value.format(DATE_TIME_FMT));
+            }
+        });
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         priceColumn.setCellFactory(col -> new TableCell<>() {
             private final NumberFormat fmt = NumberFormat.getNumberInstance(Locale.US);
@@ -120,18 +135,36 @@ public class WorkshopController {
         TextField levelField = new TextField(workshop.getLevel() != null ? workshop.getLevel() : "");
         TextField priceField = new TextField(String.valueOf(workshop.getPrice()));
 
+        DatePicker datePicker = new DatePicker(
+                workshop.getDate() != null ? workshop.getDate().toLocalDate() : LocalDate.now());
+        TextField timeField = new TextField(
+                workshop.getDate() != null ? workshop.getDate().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")) : "");
+        timeField.setPromptText("HH:mm");
+
         grid.add(new Label("Title:"), 0, 0);
         grid.add(titleField, 1, 0);
-        grid.add(new Label("Level:"), 0, 1);
-        grid.add(levelField, 1, 1);
-        grid.add(new Label("Price:"), 0, 2);
-        grid.add(priceField, 1, 2);
+        grid.add(new Label("Date:"), 0, 1);
+        grid.add(datePicker, 1, 1);
+        grid.add(new Label("Time (HH:mm):"), 0, 2);
+        grid.add(timeField, 1, 2);
+        grid.add(new Label("Level:"), 0, 3);
+        grid.add(levelField, 1, 3);
+        grid.add(new Label("Price:"), 0, 4);
+        grid.add(priceField, 1, 4);
 
         dialog.getDialogPane().setContent(grid);
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
                 workshop.setTitle(titleField.getText());
+                LocalDate date = datePicker.getValue();
+                LocalTime time = LocalTime.MIDNIGHT;
+                try {
+                    time = LocalTime.parse(timeField.getText().trim(), DateTimeFormatter.ofPattern("HH:mm"));
+                } catch (DateTimeParseException e) {
+                    // heure invalide : on garde minuit
+                }
+                workshop.setDate(date != null ? LocalDateTime.of(date, time) : null);
                 workshop.setLevel(levelField.getText());
                 try {
                     workshop.setPrice(Double.parseDouble(priceField.getText()));
