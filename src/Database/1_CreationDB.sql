@@ -72,7 +72,8 @@ CREATE TABLE Workshop(
    level VARCHAR(50),
    id_artist INT NOT NULL,
    PRIMARY KEY(id_workshop),
-   FOREIGN KEY(id_artist) REFERENCES Artist(id_artist)
+   -- ON DELETE CASCADE : Permet de supprimer automatiquement les enfants (ici l'atelier) si le parent (l'artiste) est supprimé, évitant ainsi une erreur de contrainte (intégrité référentielle).
+   FOREIGN KEY(id_artist) REFERENCES Artist(id_artist) ON DELETE CASCADE
 );
 
 CREATE TABLE Booking(
@@ -82,8 +83,8 @@ CREATE TABLE Booking(
    id_workshop INT NOT NULL,
    id_member INT NOT NULL,
    PRIMARY KEY(id_booking),
-   FOREIGN KEY(id_workshop) REFERENCES Workshop(id_workshop),
-   FOREIGN KEY(id_member) REFERENCES CommunityMember(id_member)
+   FOREIGN KEY(id_workshop) REFERENCES Workshop(id_workshop) ON DELETE CASCADE,
+   FOREIGN KEY(id_member) REFERENCES CommunityMember(id_member) ON DELETE CASCADE
 );
 
 CREATE TABLE Exhibition(
@@ -96,7 +97,7 @@ CREATE TABLE Exhibition(
    theme VARCHAR(50),
    id_gallery INT NOT NULL,
    PRIMARY KEY(id_exhibition),
-   FOREIGN KEY(id_gallery) REFERENCES Gallery(id_gallery)
+   FOREIGN KEY(id_gallery) REFERENCES Gallery(id_gallery) ON DELETE CASCADE
 );
 
 CREATE TABLE Artwork(
@@ -111,7 +112,7 @@ CREATE TABLE Artwork(
    status ENUM('FOR_SALE', 'SOLD', 'EXHIBITED') NOT NULL,
    id_exhibition INT,
    PRIMARY KEY(id_artwork),
-   FOREIGN KEY(id_exhibition) REFERENCES Exhibition(id_exhibition)
+   FOREIGN KEY(id_exhibition) REFERENCES Exhibition(id_exhibition) ON DELETE CASCADE
 );
 
 CREATE TABLE Review(
@@ -122,38 +123,38 @@ CREATE TABLE Review(
    id_artwork INT NOT NULL,
    id_member INT NOT NULL,
    PRIMARY KEY(id_review),
-   FOREIGN KEY(id_artwork) REFERENCES Artwork(id_artwork),
-   FOREIGN KEY(id_member) REFERENCES CommunityMember(id_member)
+   FOREIGN KEY(id_artwork) REFERENCES Artwork(id_artwork) ON DELETE CASCADE,
+   FOREIGN KEY(id_member) REFERENCES CommunityMember(id_member) ON DELETE CASCADE
 );
 
 CREATE TABLE Appartient(
    id_artist INT not null,
    id_artwork INT not null,
    PRIMARY KEY(id_artist, id_artwork),
-   FOREIGN KEY(id_artist) REFERENCES Artist(id_artist),
-   FOREIGN KEY(id_artwork) REFERENCES Artwork(id_artwork)
+   FOREIGN KEY(id_artist) REFERENCES Artist(id_artist) ON DELETE CASCADE,
+   FOREIGN KEY(id_artwork) REFERENCES Artwork(id_artwork) ON DELETE CASCADE
 );
 
 CREATE TABLE Exerce(
    id_artist INT not null,
    id_discipline INT not null,
    PRIMARY KEY(id_artist, id_discipline),
-   FOREIGN KEY(id_artist) REFERENCES Artist(id_artist),
-   FOREIGN KEY(id_discipline) REFERENCES Discipline(id_discipline)
+   FOREIGN KEY(id_artist) REFERENCES Artist(id_artist) ON DELETE CASCADE,
+   FOREIGN KEY(id_discipline) REFERENCES Discipline(id_discipline) ON DELETE CASCADE
 );
 
 CREATE TABLE Reference(
    id_artwork INT not null,
    id_artworkTag INT not null,
    PRIMARY KEY(id_artwork, id_artworkTag),
-   FOREIGN KEY(id_artwork) REFERENCES Artwork(id_artwork),
-   FOREIGN KEY(id_artworkTag) REFERENCES ArtworkTag(id_artworkTag)
+   FOREIGN KEY(id_artwork) REFERENCES Artwork(id_artwork) ON DELETE CASCADE,
+   FOREIGN KEY(id_artworkTag) REFERENCES ArtworkTag(id_artworkTag) ON DELETE CASCADE
 );
 
 CREATE TABLE Aimer(
    id_member INT not null,
    id_discipline INT not null,
    PRIMARY KEY(id_member, id_discipline),
-   FOREIGN KEY(id_member) REFERENCES CommunityMember(id_member),
-   FOREIGN KEY(id_discipline) REFERENCES Discipline(id_discipline)
+   FOREIGN KEY(id_member) REFERENCES CommunityMember(id_member) ON DELETE CASCADE,
+   FOREIGN KEY(id_discipline) REFERENCES Discipline(id_discipline) ON DELETE CASCADE
 );
