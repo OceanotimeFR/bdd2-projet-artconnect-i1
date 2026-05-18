@@ -18,6 +18,7 @@ public class JdbcExhibitionDao implements ExhibitionDao {
 
     private Exhibition mapExhibition(ResultSet rs) throws SQLException {
         Exhibition e = new Exhibition();
+        e.setId(rs.getInt("id_exhibition"));
         e.setTitle(rs.getString("title"));
 
         Date sd = rs.getDate("startDate");

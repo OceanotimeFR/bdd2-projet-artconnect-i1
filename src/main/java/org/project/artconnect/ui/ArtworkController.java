@@ -3,6 +3,7 @@ package org.project.artconnect.ui;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -15,9 +16,12 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.geometry.Insets;
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Locale;
 import org.project.artconnect.model.Artwork;
 import org.project.artconnect.model.Artist;
+import org.project.artconnect.model.Exhibition;
+import org.project.artconnect.persistence.JdbcExhibitionDao;
 import org.project.artconnect.service.ArtworkService;
 import org.project.artconnect.util.ServiceProvider;
 
@@ -120,7 +124,15 @@ public class ArtworkController {
         TextField typeField = new TextField(artwork.getType() != null ? artwork.getType() : "");
         TextField priceField = new TextField(String.valueOf(artwork.getPrice()));
         TextField artistField = new TextField(artwork.getArtist() != null ? artwork.getArtist().getName() : "");
-        TextField exhibitionField = new TextField(artwork.getExhibitionId() != null ? String.valueOf(artwork.getExhibitionId()) : "");
+
+        List<Exhibition> exhibitions = new JdbcExhibitionDao().findAll();
+        ComboBox<Exhibition> exhibitionCombo = new ComboBox<>(FXCollections.observableArrayList(exhibitions));
+        if (artwork.getExhibitionId() != null) {
+            exhibitions.stream()
+                .filter(ex -> ex.getId() == artwork.getExhibitionId())
+                .findFirst()
+                .ifPresent(exhibitionCombo::setValue);
+        }
 
         grid.add(new Label("Title:"), 0, 0);
         grid.add(titleField, 1, 0);
@@ -132,8 +144,8 @@ public class ArtworkController {
         grid.add(priceField, 1, 3);
         grid.add(new Label("Artist name:"), 0, 4);
         grid.add(artistField, 1, 4);
-        grid.add(new Label("Exhibition ID:"), 0, 5);
-        grid.add(exhibitionField, 1, 5);
+        grid.add(new Label("Exhibition:"), 0, 5);
+        grid.add(exhibitionCombo, 1, 5);
 
         dialog.getDialogPane().setContent(grid);
 
@@ -157,11 +169,8 @@ public class ArtworkController {
                     artist.setName(artistName);
                     artwork.setArtist(artist);
                 }
-                try {
-                    artwork.setExhibitionId(Integer.parseInt(exhibitionField.getText()));
-                } catch (NumberFormatException e) {
-                    artwork.setExhibitionId(null);
-                }
+                Exhibition selectedExhibition = exhibitionCombo.getValue();
+                artwork.setExhibitionId(selectedExhibition != null ? selectedExhibition.getId() : null);
                 return true;
             }
             return false;
