@@ -23,6 +23,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
 import org.project.artconnect.model.Workshop;
+import org.project.artconnect.model.Artist;
 import org.project.artconnect.service.WorkshopService;
 import org.project.artconnect.util.ServiceProvider;
 
@@ -134,6 +135,8 @@ public class WorkshopController {
         TextField titleField = new TextField(workshop.getTitle());
         TextField levelField = new TextField(workshop.getLevel() != null ? workshop.getLevel() : "");
         TextField priceField = new TextField(String.valueOf(workshop.getPrice()));
+        TextField instructorField = new TextField(
+                workshop.getInstructor() != null ? workshop.getInstructor().getName() : "");
 
         DatePicker datePicker = new DatePicker(
                 workshop.getDate() != null ? workshop.getDate().toLocalDate() : LocalDate.now());
@@ -143,14 +146,16 @@ public class WorkshopController {
 
         grid.add(new Label("Title:"), 0, 0);
         grid.add(titleField, 1, 0);
-        grid.add(new Label("Date:"), 0, 1);
-        grid.add(datePicker, 1, 1);
-        grid.add(new Label("Time (HH:mm):"), 0, 2);
-        grid.add(timeField, 1, 2);
-        grid.add(new Label("Level:"), 0, 3);
-        grid.add(levelField, 1, 3);
-        grid.add(new Label("Price:"), 0, 4);
-        grid.add(priceField, 1, 4);
+        grid.add(new Label("Instructor:"), 0, 1);
+        grid.add(instructorField, 1, 1);
+        grid.add(new Label("Date:"), 0, 2);
+        grid.add(datePicker, 1, 2);
+        grid.add(new Label("Time (HH:mm):"), 0, 3);
+        grid.add(timeField, 1, 3);
+        grid.add(new Label("Level:"), 0, 4);
+        grid.add(levelField, 1, 4);
+        grid.add(new Label("Price:"), 0, 5);
+        grid.add(priceField, 1, 5);
 
         dialog.getDialogPane().setContent(grid);
 
@@ -158,18 +163,33 @@ public class WorkshopController {
             if (dialogButton == saveButtonType) {
                 workshop.setTitle(titleField.getText());
                 LocalDate date = datePicker.getValue();
-                LocalTime time = LocalTime.MIDNIGHT;
-                try {
-                    time = LocalTime.parse(timeField.getText().trim(), DateTimeFormatter.ofPattern("HH:mm"));
-                } catch (DateTimeParseException e) {
-                    // heure invalide : on garde minuit
+                if (date == null) {
+                    date = LocalDate.now();
                 }
-                workshop.setDate(date != null ? LocalDateTime.of(date, time) : null);
+                LocalTime time = LocalTime.MIDNIGHT;
+                String timeText = timeField.getText().trim();
+                if (!timeText.isEmpty()) {
+                    try {
+                        time = LocalTime.parse(timeText, DateTimeFormatter.ofPattern("HH:mm"));
+                    } catch (DateTimeParseException e) {
+                        // heure invalide : on garde minuit
+                        time = LocalTime.MIDNIGHT;
+                    }
+                }
+                workshop.setDate(LocalDateTime.of(date, time));
                 workshop.setLevel(levelField.getText());
                 try {
                     workshop.setPrice(Double.parseDouble(priceField.getText()));
                 } catch (NumberFormatException e) {
                     workshop.setPrice(0.0);
+                }
+                String instructorName = instructorField.getText().trim();
+                if (!instructorName.isEmpty()) {
+                    Artist instructor = new Artist();
+                    instructor.setName(instructorName);
+                    workshop.setInstructor(instructor);
+                } else {
+                    workshop.setInstructor(null);
                 }
                 return true;
             }
